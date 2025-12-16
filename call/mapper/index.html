@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tesla 7-Day Call Scenarios · Mycelial Possibility Mapper</title>
+  <meta name="description" content="Interactive scenario explorer for Tesla 7-day test drive negotiation. Maps call pathways, rep archetypes, and outcome probabilities.">
+  
+  <!-- ZERO-HARM / ANTI-INVERSION STATEMENT
+    INTENDED USE: Educational preparation tool for respectful business negotiation.
+    NON-WEAPONIZATION: This tool is designed to help users prepare for honest, good-faith conversations.
+    It should never be used for manipulation, deception, or coercive tactics.
+    LICENSE: MIT-style - use freely, attribute, share improvements.
+  -->
+  
+  <style>
+    /* === THEME SYSTEM === 
+       Supports: medieval, space, anime, corporate, nature (auto-detects prefers-color-scheme)
+       To add a theme: define --theme-* variables, add to themeRegistry, create switch option
+    */
+    :root {
+      /* Base palette */
+      --bg: #0a0e14; --panel: #0f141b; --ink: #e6f1ff; --muted: #99b8d4;
+      --accent: #5ccfe6; --accent2: #ffae57; --success: #bae67e; --warn: #ffcc66; --danger: #ef6b73;
+      --card: #0d1117; --border: #1c2632; --shadow: rgba(0,0,0,0.3);
+      --gradient: linear-gradient(135deg, rgba(92,207,230,0.1), rgba(255,174,87,0.1));
+    }
+    
+    [data-theme="medieval"] {
+      --bg: #1a0f0a; --panel: #2d1810; --ink: #f4e4d4; --muted: #b89968;
+      --accent: #d4af37; --accent2: #8b4513; --success: #6b8e23; --card: #241512; --border: #3d2418;
+    }
+    
+    [data-theme="space"] {
+      --bg: #000000; --panel: #0a0a1f; --ink: #ffffff; --muted: #7a7aff;
+      --accent: #00ffff; --accent2: #ff00ff; --success: #00ff00; --card: #0f0f2f; --border: #1a1a3f;
+    }
+    
+    [data-theme="anime"] {
+      --bg: #ffe0f0; --panel: #ffffff; --ink: #2d1b2e; --muted: #8b7a8e;
+      --accent: #ff69b4; --accent2: #ffa500; --success: #98fb98; --card: #fff0f8; --border: #ffb6d9;
+    }
+    
+    [data-theme="corporate"] {
+      --bg: #f5f5f5; --panel: #ffffff; --ink: #2c3e50; --muted: #7f8c8d;
+      --accent: #3498db; --accent2: #e74c3c; --success: #2ecc71; --card: #ffffff; --border: #bdc3c7;
+    }
+    
+    [data-theme="nature"] {
+      --bg: #0d1f0d; --panel: #1a2f1a; --ink: #e8f5e8; --muted: #8fbc8f;
+      --accent: #90ee90; --accent2: #daa520; --success: #7cfc00; --card: #132613; --border: #2d4a2d;
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* === PARALLAX CONSTELLATION BACKGROUND === 
+       Creates a subtle moving star field that responds to scroll
+       Pure CSS animations, no external dependencies
+    */
+    .constellation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: twinkle 4s infinite alternate;
+    }
+    
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.3; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.2); }
+    }
+    
+    /* === STICKY HEADER WITH HUD === 
+       Gamification elements: XP, level, scenario count, confidence meter
+    */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: linear-gradient(180deg, rgba(10,14,20,0.95), rgba(10,14,20,0.85));
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+    
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .hud-left h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .hud-stats {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    
+    .stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 6px 12px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      min-width: 80px;
+    }
+    
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+    }
+    
+    .stat-value {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--success));
+      transition: width 0.3s ease;
+    }
+    
+    /* === NAVIGATION === */
+    nav {
+      display: flex;
+      gap: 8px;
+      padding: 0 20px 12px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+    }
+    
+    nav a {
+      padding: 8px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    
+    nav a:hover {
+      background: var(--panel);
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+    
+    /* === MAIN CONTENT === */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+    
+    /* === SECTION STYLING === 
+       Collapsible sections with smooth animations
+       Each section is a logical module for easy expansion
+    */
+    section {
+      margin: 32px 0;
+      background: var(--gradient), var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    section:hover {
+      border-color: var(--accent);
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+    
+    .section-header {
+      padding: 20px 24px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+      background: rgba(0,0,0,0.2);
+    }
+    
+    .section-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .section-header .icon {
+      font-size: 1.5rem;
+      transition: transform 0.3s;
+    }
+    
+    section.collapsed .icon {
+      transform: rotate(-90deg);
+    }
+    
+    .section-content {
+      padding: 24px;
+      max-height: 5000px;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+    
+    section.collapsed .section-content {
+      max-height: 0;
+      padding: 0 24px;
+    }
+    
+    .section-intro {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+      padding: 12px;
+      background: rgba(0,0,0,0.2);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+    }
+    
+    /* === SCENARIO CARDS === 
+       Interactive cards representing different call outcomes
+       Tooltips explain mechanics and probabilities
+    */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+    
+    .scenario-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .scenario-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+      box-shadow: 0 8px 24px var(--shadow);
+    }
+    
+    .scenario-card.viewed {
+      border-color: var(--success);
+      opacity: 0.8;
+    }
+    
+    .scenario-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    
+    .scenario-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+    
+    .probability {
+      background: rgba(92,207,230,0.2);
+      color: var(--accent);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .scenario-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    
+    .tag {
+      background: rgba(255,255,255,0.1);
+      color: var(--muted);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      border: 1px solid var(--border);
+    }
+    
+    .tag.positive { background: rgba(186,230,126,0.2); color: var(--success); }
+    .tag.negative { background: rgba(239,107,115,0.2); color: var(--danger); }
+    .tag.neutral { background: rgba(153,184,212,0.2); color: var(--muted); }
+    
+    /* === REP ARCHETYPE SYSTEM === 
+       Different personality types affect conversation flow
+    */
+    .archetype-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    
+    .archetype-card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .archetype-card:hover {
+      border-color: var(--accent2);
+      transform: scale(1.02);
+    }
+    
+    .archetype-card.selected {
+      border-color: var(--success);
+      background: rgba(186,230,126,0.1);
+    }
+    
+    .archetype-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    
+    .archetype-name {
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--accent2);
+    }
+    
+    /* === CONVERSATION FLOW TREE === 
+       Visual branching structure showing decision points
+    */
+    .flow-tree {
+      padding: 20px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 12px;
+      overflow-x: auto;
+    }
+    
+    .flow-node {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 8px 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    
+    .flow-node:hover {
+      border-color: var(--accent);
+      transform: translateX(4px);
+    }
+    
+    .flow-node.selected {
+      border-color: var(--success);
+      background: rgba(186,230,126,0.1);
+    }
+    
+    .flow-children {
+      margin-left: 32px;
+      border-left: 2px dashed var(--border);
+      padding-left: 16px;
+    }
+    
+    /* === OUTCOME TRACKER === 
+       Shows what outcomes user has explored
+    */
+    .outcome-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    
+    .badge {
+      padding: 10px 16px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 2px solid;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+    }
+    
+    .badge.unlocked {
+      background: rgba(186,230,126,0.2);
+      border-color: var(--success);
+      color: var(--success);
+    }
+    
+    .badge.locked {
+      background: rgba(127,140,141,0.1);
+      border-color: var(--border);
+      color: var(--muted);
+      opacity: 0.5;
+    }
+    
+    /* === BUTTONS === */
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--ink);
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    
+    .btn:hover {
+      border-color: var(--accent);
+      background: rgba(92,207,230,0.1);
+      transform: translateY(-2px);
+    }
+    
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--bg);
+    }
+    
+    .btn-primary:hover {
+      background: var(--accent2);
+      border-color: var(--accent2);
+    }
+    
+    /* === MODAL SYSTEM === 
+       For detailed scenario exploration
+    */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    
+    .modal.active {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 32px;
+      position: relative;
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    
+    .modal-close:hover {
+      color: var(--danger);
+    }
+    
+    /* === EXPORT SECTION === */
+    .export-box {
+      background: var(--card);
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    /* === THEME SWITCHER === */
+    .theme-switcher {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      z-index: 99;
+      box-shadow: 0 4px 16px var(--shadow);
+    }
+    
+    .theme-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      margin: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .theme-btn:hover {
+      transform: scale(1.1);
+      border-color: var(--accent);
+    }
+    
+    .theme-btn.active {
+      border-color: var(--success);
+      box-shadow: 0 0 12px var(--success);
+    }
+    
+    /* === TOOLTIP SYSTEM === 
+       Provides context and guidance throughout the interface
+       Appears on hover, explains functionality and expected outcomes
+    */
+    [data-tooltip] {
+      position: relative;
+      cursor: help;
+    }
+    
+    [data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.95);
+      color: var(--ink);
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      white-space: normal;
+      max-width: 250px;
+      z-index: 1000;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    
+    [data-tooltip]:hover::before {
+      content: '';
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--accent);
+      margin-bottom: 2px;
+    }
+    
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .hud {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .scenario-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .archetype-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .theme-switcher {
+        bottom: 10px;
+        right: 10px;
+        padding: 8px;
+      }
+    }
+    
+    /* === PRINT STYLESHEET === */
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+      
+      header, .theme-switcher, .btn-group, nav {
+        display: none;
+      }
+      
+      section {
+        page-break-inside: avoid;
+        border: 1px solid #ccc;
+        box-shadow: none;
+      }
+      
+      section.collapsed .section-content {
+        max-height: none;
+        padding: 24px;
+      }
+      
+      .scenario-card {
+        page-break-inside: avoid;
+        border: 1px solid #ccc;
+      }
+    }
+    
+    /* === ANIMATIONS === */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .fade-in {
+      animation: fadeIn 0.5s ease;
+    }
+  </style>
+</head>
+<body data-theme="auto">
+  <!-- PARALLAX CONSTELLATION BACKGROUND -->
+  <div class="constellation" id="constellation"></div>
+  
+  <!-- GAMIFICATION HUD -->
+  <header>
+    <div class="hud">
+      <div class="hud-left">
+        <h1>Tesla 7-Day Call Scenario Mapper</h1>
+        <div style="font-size: 0.85rem; color: var(--muted);">
+          Mycelial Possibility Explorer · Foster + Navi
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat" data-tooltip="Track your preparation progress. Exploring scenarios increases readiness.">
+          <div class="stat-label">Readiness</div>
+          <div class="stat-value" id="readinessScore">0%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="readinessBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="stat" data-tooltip="Number of scenarios you've explored. More exploration = better preparation.">
+          <div class="stat-label">Explored</div>
+          <div class="stat-value" id="scenarioCount">0/24</div>
+        </div>
+        <div class="stat" data-tooltip="Your confidence level based on explored archetypes and outcomes.">
+          <div class="stat-label">Confidence</div>
+          <div class="stat-value" id="confidenceLevel">Novice</div>
+        </div>
+      </div>
+    </div>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#archetypes">Rep Archetypes</a>
+      <a href="#scenarios">Call Scenarios</a>
+      <a href="#flow">Conversation Flow</a>
+      <a href="#outcomes">Outcomes</a>
+      <a href="#tactics">Tactics Library</a>
+      <a href="#export">Export/Import</a>
+      <a href="#attribution">Attribution</a>
+    </nav>
+  </header>
+  
+  <main class="container">
+    <!-- === OVERVIEW SECTION === 
+         WHAT: Introduction to the scenario mapper
+         HOW TO USE: Read to understand the tool's purpose
+         EXPECTED OUTCOME: Context for exploring call possibilities
+    -->
+    <section id="overview">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>📍 Overview: Mapping the Possible</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="section-intro">
+          <strong>Purpose:</strong> This tool maps the probability space of your Tesla 7-day test drive call. Every conversation is a branching possibility tree—understanding the branches helps you navigate with confidence and authenticity.
+        </div>
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin: 20px 0;">
+          <h3 style="margin-bottom: 12px; color: var(--accent);">Core Principles</h3>
+          <ul style="color: var(--muted); line-height: 1.8;">
+            <li><strong>Authenticity First:</strong> These scenarios aren't scripts—they're frameworks for honest dialogue.</li>
+            <li><strong>Mycelial Thinking:</strong> Like fungal networks, conversations have multiple connection points. Find the ones that resonate.</li>
+            <li><strong>Probabilistic Preparation:</strong> Not all outcomes are equal. Focus energy on likely paths while staying adaptive.</li>
+            <li><strong>Rep-as-Human:</strong> The person on the other end has constraints, goals, and humanity. Meet them there.</li>
+            <li><strong>Outcome Diversity:</strong> "Success" has many forms—7 days, 3 days, a follow-up call, a valuable "no."</li>
+          </ul>
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <h3 style="margin-bottom: 12px;">How This Tool Works</h3>
+          <ol style="color: var(--muted); line-height: 1.8;">
+            <li><strong>Select a Rep Archetype:</strong> Identify the personality/role type you're likely engaging.</li>
+            <li><strong>Explore Scenarios:</strong> Click through different conversation pathways and outcomes.</li>
+            <li><strong>Study the Flow:</strong> Map the decision tree from opening to close.</li>
+            <li><strong>Track Outcomes:</strong> See which endings you've prepared for.</li>
+            <li><strong>Export Your Plan:</strong> Save your selected strategies and talking points.</li>
+          </ol>
+        </div>
+        
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="scrollToSection('archetypes')">Start: Choose Rep Archetype</button>
+          <button class="btn" onclick="scrollToSection('scenarios')">Jump to Scenarios</button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- === REP ARCHETYPES SECTION === 
+         WHAT: Different personality types/roles you might encounter
+         HOW TO USE: Select the archetype that matches your rep
+         EXPECTED OUTCOME: Tailored scenario recommendations
+    -->
+    <section id="archetypes">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>👤 Rep Archetypes: Know Your Audience</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="section-intro">
+          Understanding the person you're talking to shapes everything. These archetypes aren't rigid boxes—most reps blend traits. Select the closest match to filter relevant scenarios.
+        </div>
+        
+        <div class="archetype-grid" id="archetypeGrid">
+          <!-- Injected by JavaScript -->
+        </div>
+        
+        <div id="archetypeDetails" style="margin-top: 24px; padding: 20px; background: var(--card); border-radius: 12px; display: none;">
+          <h3 style="color: var(--accent); margin-bottom: 12px;">Selected: <span id="archetypeName"></span></h3>
+          <div id="archetypeInfo" style="color: var(--muted); line-height: 1.6;"></div>
+          <div style="margin-top: 16px;">
+            <h4 style="color: var(--accent2); margin-bottom: 8px;">Best Approaches:</h4>
+            <ul id="archetypeApproaches" style="color: var(--muted); line-height: 1.6;"></ul>
+          </div>
+          <div style="margin-top: 16px;">
+            <h4 style="color: var(--warn); margin-bottom: 8px;">Avoid:</h4>
+            <ul id="archetypeAvoid" style="color: var(--muted); line-height: 1.6;"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- === CALL SCENARIOS SECTION === 
+         WHAT: Detailed breakdown of possible call outcomes
+         HOW TO USE: Click scenarios to explore details, strategies, and probability
+         EXPECTED OUTCOME: Understanding of what might happen and how to respond
+    -->
+    <section id="scenarios">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>🌳 Call Scenarios: The Branching Paths</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="section-intro">
+          These are the major outcome categories, ordered roughly by likelihood. Click any scenario to explore the full context, strategy, and follow-up actions.
+        </div>
+        
+        <div style="margin: 20px 0;">
+          <label style="color: var(--muted); font-size: 0.9rem; display: block; margin-bottom: 8px;">
+            Filter by archetype:
+          </label>
+          <select id="scenarioFilter" onchange="filterScenarios()" style="width: 100%; padding: 10px; background: var(--card); color: var(--ink); border: 1px solid var(--border); border-radius: 8px;">
+            <option value="all">All Scenarios</option>
+            <!-- Populated by JS -->
+          </select>
+        </div>
+        
+        <div class="scenario-grid" id="scenarioGrid">
+          <!-- Injected by JavaScript -->
+        </div>
+      </div>
+    </section>
+    
+    <!-- === CONVERSATION FLOW SECTION === 
+         WHAT: Interactive decision tree showing call progression
+         HOW TO USE: Click nodes to expand branches and see response options
+         EXPECTED OUTCOME: Clear mental model of conversation structure
+    -->
+    <section id="flow">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>🌊 Conversation Flow: The Decision Tree</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="section-intro">
+          This flow maps the typical progression from opening to close. Click nodes to expand decision points. Green = ideal path, Yellow = negotiation required, Red = recovery needed.
+        </div>
+        
+        <div class="flow-tree" id="flowTree">
+          <!-- Injected by JavaScript -->
+        </div>
+        
+        <div class="btn-group" style="margin-top: 20px;">
+          <button class="btn" onclick="expandAllFlow()">Expand All</button>
+          <button class="btn" onclick="collapseAllFlow()">Collapse All</button>
+          <button class="btn" onclick="resetFlow()">Reset</button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- === OUTCOMES SECTION === 
+         WHAT: Achievement tracker for explored endings
+         HOW TO USE: Explore scenarios to unlock outcome badges
+         EXPECTED OUTCOME: Gamified tracking of preparation completeness
+    -->
+    <section id="outcomes">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>🎯 Outcomes: What You've Prepared For</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="section-intro">
+          These are the distinct endings your call might reach. Unlock them by exploring the related scenarios. The more you unlock, the higher your readiness score.
+        </div>
+        
+        <div class="outcome-badges" id="outcomeGrid">
+          <!-- Injected by JavaScript -->
+        </div>
+        
+        <div style="margin-top: 24px; padding: 16px; background: rgba(92,207,230,0.1); border-left: 3px solid var(--accent); border-radius: 8px;">
+          <strong>Pro Tip:</strong> You don't need to unlock everything. Focus on outcomes aligned with your selected archetype and top 3 scenarios.
+        </div>
+      </div>
+    </section>
+    
+    <!-- === TACTICS LIBRARY SECTION === 
+         WHAT: Reusable conversational techniques
+         HOW TO USE: Browse tactics, copy useful phrases
+         EXPECTED OUTCOME: Toolkit of tested approaches
+    -->
+    <section id="tactics">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>🧰 Tactics Library: Tested Techniques</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="section-intro">
+          These are modular conversation techniques that work across scenarios. They're not scripts—adapt them to your voice and context.
+        </div>
+        
+        <div id="tacticsLibrary">
+          <!-- Injected by JavaScript -->
+        </div>
+      </div>
+    </section>
+    
+    <!-- === EXPORT/IMPORT SECTION === 
+         WHAT: Save and load your preparation state
+         HOW TO USE: Export to JSON for backup, import to restore
+         EXPECTED OUTCOME: Persistent preparation across sessions
+    -->
+    <section id="export">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>💾 Export / Import: Save Your Strategy</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div class="section-intro">
+          Your exploration state (viewed scenarios, selected archetype, unlocked outcomes) is automatically saved locally via IndexedDB. Use these tools to backup or transfer between devices.
+        </div>
+        
+        <div class="export-box">
+          <h3 style="margin-bottom: 16px; color: var(--accent);">Export Options</h3>
+          <div class="btn-group">
+            <button class="btn btn-primary" onclick="exportJSON()">📥 Export JSON</button>
+            <button class="btn" onclick="exportHTML()">📄 Export HTML Report</button>
+            <button class="btn" onclick="exportPDF()">🖨️ Export PDF (Print)</button>
+          </div>
+        </div>
+        
+        <div class="export-box" style="margin-top: 20px;">
+          <h3 style="margin-bottom: 16px; color: var(--accent2);">Import</h3>
+          <input type="file" id="importFile" accept=".json" style="display: block; margin-bottom: 12px; padding: 10px; background: var(--card); color: var(--ink); border: 1px solid var(--border); border-radius: 8px;">
+          <button class="btn" onclick="importJSON()">📤 Import JSON</button>
+          <div id="importStatus" style="margin-top: 12px; color: var(--muted); font-size: 0.9rem;"></div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 16px; background: var(--card); border-radius: 8px;">
+          <h4 style="color: var(--accent); margin-bottom: 8px;">What's Saved?</h4>
+          <ul style="color: var(--muted); line-height: 1.6; font-size: 0.9rem;">
+            <li>Selected rep archetype</li>
+            <li>Viewed scenarios (for readiness calculation)</li>
+            <li>Unlocked outcomes</li>
+            <li>Custom notes (if added)</li>
+            <li>Theme preference</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    
+    <!-- === ATTRIBUTION SECTION === 
+         WHAT: Credits, licenses, and integrity statement
+         HOW TO USE: Reference for proper attribution
+         EXPECTED OUTCOME: Transparent provenance
+    -->
+    <section id="attribution">
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>📜 Attribution & Integrity</h2>
+        <span class="icon">▼</span>
+      </div>
+      <div class="section-content">
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: var(--accent); margin-bottom: 12px;">Zero-Harm / Anti-Inversion Statement</h3>
+          <p style="color: var(--muted); line-height: 1.6;">
+            <strong>Intended Use:</strong> This tool is designed for honest, good-faith business negotiation preparation. It helps users think through conversation possibilities to approach calls with confidence and clarity.
+          </p>
+          <p style="color: var(--muted); line-height: 1.6; margin-top: 12px;">
+            <strong>Non-Weaponization:</strong> This tool must not be used for manipulation, deception, coercion, or any tactic that disrespects the autonomy and wellbeing of others. The goal is mutual understanding, not exploitation.
+          </p>
+          <p style="color: var(--muted); line-height: 1.6; margin-top: 12px;">
+            <strong>Ethical Boundaries:</strong> If you find yourself using this tool to craft deceptive narratives, pressure tactics, or approaches that would harm relationships—stop. That's not what this is for.
+          </p>
+        </div>
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: var(--accent); margin-bottom: 12px;">Created By</h3>
+          <p style="color: var(--muted); line-height: 1.6;">
+            <strong>Ricky Foster + Navi</strong><br>
+            Planetary Restoration Archive<br>
+            <a href="mailto:admin@planetaryrestorationarchive.com" style="color: var(--accent2);">admin@planetaryrestorationarchive.com</a>
+          </p>
+          <p style="color: var(--muted); line-height: 1.6; margin-top: 12px;">
+            Part of the Mycelial Toolkit series—tools for honest, systemic, possibility-oriented thinking.
+          </p>
+        </div>
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: var(--accent); margin-bottom: 12px;">License & Attributions</h3>
+          <p style="color: var(--muted); line-height: 1.6;">
+            <strong>License:</strong> MIT-style open use. You may adapt, redistribute, and build upon this tool. Please attribute the source and maintain the Zero-Harm statement.
+          </p>
+          <p style="color: var(--muted); line-height: 1.6; margin-top: 12px;">
+            <strong>Patterns Adapted From:</strong>
+          </p>
+          <ul style="color: var(--muted); line-height: 1.6; margin-top: 8px; margin-left: 20px;">
+            <li><strong>GitHub Discussions UI:</strong> Collapsible sections, tag system (MIT License)</li>
+            <li><strong>Product Hunt:</strong> Card-based exploration interface (Conceptual pattern, no code replication)</li>
+            <li><strong>Notion:</strong> Nested page structure inspiration (Conceptual pattern)</li>
+            <li><strong>Game Design (Telltale Games):</strong> Branching narrative structure (Conceptual pattern)</li>
+          </ul>
+          <p style="color: var(--muted); line-height: 1.6; margin-top: 12px; font-size: 0.85rem;">
+            No proprietary code was reproduced. Patterns were studied and reimplemented with original code. All external concepts are properly attributed here.
+          </p>
+        </div>
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px;">
+          <h3 style="color: var(--accent); margin-bottom: 12px;">Technical Integrity</h3>
+          <p style="color: var(--muted); line-height: 1.6;">
+            This page computes a SHA-256 fingerprint of its core content for tamper-evident reference. It's not security—it's transparency.
+          </p>
+          <div class="btn-group" style="margin-top: 12px;">
+            <button class="btn" onclick="computeHash()">Compute SHA-256</button>
+            <span id="hashOutput" style="font-family: monospace; color: var(--muted); font-size: 0.85rem;">...</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <!-- MODAL FOR DETAILED SCENARIO VIEW -->
+  <div class="modal" id="scenarioModal">
+    <div class="modal-content">
+      <span class="modal-close" onclick="closeModal()">&times;</span>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+  
+  <!-- THEME SWITCHER -->
+  <div class="theme-switcher" data-tooltip="Click to change visual theme">
+    <div style="font-size: 0.7rem; color: var(--muted); margin-bottom: 8px; text-align: center;">THEME</div>
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+      <button class="theme-btn" onclick="setTheme('auto')" data-theme="auto" style="background: linear-gradient(135deg, #0a0e14, #5ccfe6);" data-tooltip="Auto (follows system)"></button>
+      <button class="theme-btn" onclick="setTheme('medieval')" data-theme="medieval" style="background: linear-gradient(135deg, #1a0f0a, #d4af37);" data-tooltip="Medieval"></button>
+      <button class="theme-btn" onclick="setTheme('space')" data-theme="space" style="background: linear-gradient(135deg, #000000, #00ffff);" data-tooltip="Space"></button>
+      <button class="theme-btn" onclick="setTheme('anime')" data-theme="anime" style="background: linear-gradient(135deg, #ffe0f0, #ff69b4);" data-tooltip="Anime"></button>
+      <button class="theme-btn" onclick="setTheme('corporate')" data-theme="corporate" style="background: linear-gradient(135deg, #f5f5f5, #3498db);" data-tooltip="Corporate"></button>
+      <button class="theme-btn" onclick="setTheme('nature')" data-theme="nature" style="background: linear-gradient(135deg, #0d1f0d, #90ee90);" data-tooltip="Nature"></button>
+    </div>
+  </div>
+  
+  <!-- ============================================ -->
+  <!-- JAVASCRIPT: Core functionality and data     -->
+  <!-- ============================================ -->
+  <script>
+    /* ============================================
+       TOOLTIP: Data structures for all scenarios
+       WHAT: Complete scenario database
+       HOW TO USE: Referenced by rendering functions
+       EXPECTED OUTCOME: Scenarios populate the interface
+       ============================================ */
+    
+    // Rep Archetype Database
+    const ARCHETYPES = [
+      {
+        id: 'gatekeeper',
+        icon: '🛡️',
+        name: 'The Gatekeeper',
+        desc: 'Policy-focused, risk-averse, follows process strictly',
+        approaches: [
+          'Lead with policy alignment—demonstrate you understand their constraints',
+          'Offer to sign any necessary waivers or agreements',
+          'Frame the 7-day request as a special case with clear business value',
+          'Provide references or credentials that build trust'
+        ],
+        avoid: [
+          'Challenging their authority or process',
+          'Pushing too hard on first contact',
+          'Asking for exceptions without justification',
+          'Bypassing them to reach management'
+        ],
+        probability: 0.35,
+        scenarios: ['policy-block', 'escalation-path', 'compromise-offer']
+      },
+      {
+        id: 'enthusiast',
+        icon: '⚡',
+        name: 'The Enthusiast',
+        desc: 'Passionate about the product, wants to enable customers',
+        approaches: [
+          'Match their energy—show genuine excitement about the vehicle',
+          'Discuss the technical details they love (range, acceleration, features)',
+          'Frame your 7-day plan as a way to create great content for the store',
+          'Ask about their own EV experience'
+        ],
+        avoid: [
+          'Being overly transactional or cold',
+          'Ignoring the technical conversation opportunities',
+          'Focusing only on price/logistics',
+          'Downplaying the vehicle's capabilities'
+        ],
+        probability: 0.25,
+        scenarios: ['instant-yes', 'creative-solution', 'referral-bonus']
+      },
+      {
+        id: 'pragmatist',
+        icon: '📊',
+        name: 'The Pragmatist',
+        desc: 'Numbers-driven, wants clear ROI and minimal risk',
+        approaches: [
+          'Lead with the value proposition—what Tesla gains',
+          'Quantify the benefits (potential referrals, feedback quality)',
+          'Show you've done your homework on the process',
+          'Propose a clear, low-friction arrangement'
+        ],
+        avoid: [
+          'Vague or emotional appeals',
+          'Lengthy explanations without clear points',
+          'Asking for special treatment without justification',
+          'Wasting their time with small talk'
+        ],
+        probability: 0.30,
+        scenarios: ['value-negotiation', 'compromise-offer', 'conditional-yes']
+      },
+      {
+        id: 'newbie',
+        icon: '🌱',
+        name: 'The Newbie',
+        desc: 'Newer to the role, may need to check with management',
+        approaches: [
+          'Be patient and supportive—help them look good',
+          'Offer to provide everything in writing for their manager',
+          'Frame requests in a way that makes escalation easy',
+          'Build rapport first, then make the ask'
+        ],
+        avoid: [
+          'Expressing frustration at their uncertainty',
+          'Trying to manipulate their inexperience',
+          'Going around them too quickly',
+          'Making them feel inadequate'
+        ],
+        probability: 0.10,
+        scenarios: ['escalation-path', 'manager-approval', 'follow-up-call']
+      }
+    ];
+    
+    // Scenario Database
+    const SCENARIOS = [
+      {
+        id: 'instant-yes',
+        title: 'Instant Yes (Dream Scenario)',
+        probability: '8%',
+        desc: 'Rep immediately approves 7-day demo. Rare but possible with enthusiast archetype or slow season.',
+        archetype: ['enthusiast'],
+        outcome: 'full-success',
+        tags: ['positive'],
+        fullDetails: {
+          whatHappens: 'The rep lights up when they hear your plan. They say something like "That sounds awesome—let me check the calendar." Within minutes, you have a 7-day booking confirmed.',
+          whyItHappens: [
+            'The rep is an enthusiast who loves creating evangelists',
+            'Slow inventory movement—they need success stories',
+            'Your pitch hits their personal values (sustainability, innovation)',
+            'They have authority and trust their judgment'
+          ],
+          howToCapitalize: [
+            'Show immediate gratitude and confirm next steps',
+            'Offer to document everything for their internal use',
+            'Ask if there are any specific use-cases they want you to test',
+            'Get their direct contact for updates during the week'
+          ],
+          followUp: 'Send a thank-you email within 24 hours. During the test drive, send 1-2 updates with photos/insights. After return, provide a detailed report they can share internally.'
+        }
+      },
+      {
+        id: 'policy-block',
+        title: 'Policy Block (Hard No)',
+        probability: '25%',
+        desc: 'Rep cites company policy—7-day demos not standard. Requires negotiation or escalation.',
+        archetype: ['gatekeeper', 'newbie'],
+        outcome: 'needs-escalation',
+        tags: ['negative'],
+        fullDetails: {
+          whatHappens: 'The rep responds with "Our standard test drives are [24 hours/weekend/etc.]. I don\'t have approval for 7 days." The tone may be apologetic or firm.',
+          whyItHappens: [
+            'Corporate policy genuinely restricts longer demos',
+            'Local inventory constraints (high demand)',
+            'Past bad experiences with extended loans',
+            'Rep lacks decision-making authority'
+          ],
+          howToRespond: [
+            'Acknowledge the policy respectfully: "I completely understand the standard process."',
+            'Ask: "Is there anyone who could authorize an exception, or an alternative approach?"',
+            'Offer to put your request in writing for escalation',
+            'Pivot: "If 7 days isn\'t possible, what\'s the longest period you can authorize?"'
+          ],
+          recoveryPaths: [
+            '<strong>Escalation:</strong> Ask for manager contact, frame as special program request',
+            '<strong>Compromise:</strong> Accept 3-4 days if that\'s the max',
+            '<strong>Staged Approach:</strong> Take standard drive now, build relationship, request extension later',
+            '<strong>Alternative Store:</strong> Ask if other locations have different policies'
+          ],
+          followUp: 'If you hit a wall, thank them, ask for manager contact, and send a formal written proposal within 48 hours. Include your pitch deck and reference any Tesla programs for influencers/creators.'
+        }
+      },
+      {
+        id: 'value-negotiation',
+        title: 'Value Negotiation (Show Me Why)',
+        probability: '30%',
+        desc: 'Rep is interested but needs clear value proposition. Winnable with strong pitch.',
+        archetype: ['pragmatist', 'gatekeeper'],
+        outcome: 'conditional-yes',
+        tags: ['neutral'],
+        fullDetails: {
+          whatHappens: 'The rep says something like "Interesting—but what\'s in it for us?" or "Help me understand why this is worth tying up a vehicle for a week."',
+          whyItHappens: [
+            'They have authority but need business justification',
+            'Inventory is valuable—opportunity cost is real',
+            'They want to say yes but need ammunition for their boss',
+            'Standard protocol is to push back on non-standard requests'
+          ],
+          howToRespond: [
+            'Pivot to value immediately: "Great question. Here\'s what you gain..."',
+            'Quantify: "I\'ll produce a detailed report, social content, and likely 2-3 direct referrals."',
+            'Differentiate: "This isn\'t just a joyride—it\'s a documented case study."',
+            'Offer deliverables: "I\'ll provide a written summary you can use for training."'
+          ],
+          keyTalkingPoints: [
+            'Alberta winter performance data (valuable for future customers)',
+            'Service and UX feedback (operational improvements)',
+            'Community referral network (direct sales impact)',
+            'Content creation (social proof and marketing value)',
+            'Low-cost marketing (compared to paid campaigns)'
+          ],
+          negotiationTactics: [
+            '<strong>Anchor high:</strong> Start at 7 days, negotiate down if needed',
+            '<strong>Mutual benefit frame:</strong> "This helps both of us achieve our goals"',
+            '<strong>Proof of concept:</strong> Mention you\'ve successfully completed similar projects',
+            '<strong>Easy yes:</strong> "I can start immediately if you have availability this week"'
+          ],
+          followUp: 'If they seem convinced but hesitant, offer to send your full proposal via email. Include testimonials, portfolio links, and a one-pager summarizing the value exchange.'
+        }
+      },
+      {
+        id: 'compromise-offer',
+        title: 'Compromise Offer (3-4 Days)',
+        probability: '20%',
+        desc: 'Rep offers shorter duration as middle ground. Accept or negotiate further.',
+        archetype: ['pragmatist', 'gatekeeper'],
+        outcome: 'partial-success',
+        tags: ['neutral'],
+        fullDetails: {
+          whatHappens: 'The rep says "I can\'t do 7 days, but I could authorize 3-4 days" or "We have a long weekend demo program—would that work?"',
+          whyItHappens: [
+            'They want to help but face real constraints',
+            'Inventory turnover requirements limit longer loans',
+            'They\'re splitting the difference as a negotiation tactic',
+            'They need a "win" that feels like accommodation'
+          ],
+          howToRespond: [
+            '<strong>Option A - Accept:</strong> "That works—let\'s make it count. Can we include a weekend?"',
+            '<strong>Option B - Counter:</strong> "I appreciate the flexibility. Could we stretch to 5 days to capture a full work week?"',
+            '<strong>Option C - Staged:</strong> "Let\'s start with 3 days. If I deliver value, could we extend?"'
+          ],
+          strategicConsiderations: [
+            '3-4 days may be sufficient if you plan intensively',
+            'Including a weekend doubles the value (commute days + leisure)',
+            'Accepting builds trust for future requests',
+            'Pushing too hard might collapse the deal'
+          ],
+          maximizingShortDuration: [
+            'Pre-plan every hour of the test period',
+            'Focus on highest-value tests (winter cold start, highway range, charging cadence)',
+            'Document obsessively—every insight matters',
+            'Offer daily updates to show value delivery'
+          ],
+          followUp: 'Confirm the arrangement immediately. Send a calendar invite for pickup/return. Deliver exceptional results to set up future asks.'
+        }
+      },
+      {
+        id: 'escalation-path',
+        title: 'Escalation to Manager',
+        probability: '15%',
+        desc: 'Rep defers to manager. You need a strong written proposal.',
+        archetype: ['newbie', 'gatekeeper'],
+        outcome: 'needs-escalation',
+        tags: ['neutral'],
+        fullDetails: {
+          whatHappens: 'The rep says "I\'ll need to check with my manager" or "This is above my pay grade—let me get [Name]."',
+          whyItHappens: [
+            'Rep lacks authority for non-standard requests',
+            'They want to say yes but need cover from management',
+            'Your request triggered a "check with boss" protocol',
+            'They\'re genuinely uncertain about policy'
+          ],
+          howToRespond: [
+            'Make it easy: "That makes sense—I\'d be happy to put everything in writing."',
+            'Ask: "What information would be most helpful for [Manager]?"',
+            'Offer: "Should I follow up directly, or would you prefer to present it?"',
+            'Timeline: "When would be a good time to check back?"'
+          ],
+          preparingForManagerCall: [
+            '<strong>Written Proposal:</strong> Send a one-page summary before the call',
+            '<strong>Research Manager:</strong> LinkedIn/Google them for rapport building',
+            '<strong>Anticipate Questions:</strong> Liability, insurance, return conditions, value prop',
+            '<strong>Have References:</strong> Portfolio, past projects, testimonials ready',
+            '<strong>Flexibility:</strong> Be ready to negotiate duration or terms'
+          ],
+          emailTemplate: [
+            '<strong>Subject:</strong> 7-Day Test Drive Proposal — Value Exchange for [Location]',
+            '<strong>Body:</strong>',
+            '• Brief intro (who you are, why Tesla)',
+            '• The ask (7-day demo, specific dates if possible)',
+            '• The value (what Tesla gains)',
+            '• Credentials (why you\'re trustworthy)',
+            '• Logistics (insurance, return protocol, deliverables)',
+            '• Next steps (offer to call, follow up timeline)'
+          ],
+          followUp: 'If you don\'t hear back in 3 business days, send a polite follow-up. If still no response after 5 days, try calling during non-peak hours (mid-morning or mid-afternoon).'
+        }
+      },
+      {
+        id: 'creative-solution',
+        title: 'Creative Solution (Surprise Path)',
+        probability: '5%',
+        desc: 'Rep proposes unexpected alternative (demo event, loaner program, partnership).',
+        archetype: ['enthusiast', 'pragmatist'],
+        outcome: 'alternative-win',
+        tags: ['positive'],
+        fullDetails: {
+          whatHappens: 'The rep says something surprising: "We can\'t do 7 days for a test drive, but what if you participated in our demo day event?" or "Have you considered our ambassador program?"',
+          whyItHappens: [
+            'Creative rep sees an opportunity for mutual benefit',
+            'Your request triggered a "this person could be valuable" response',
+            'They have a program you weren\'t aware of',
+            'They\'re thinking beyond the script'
+          ],
+          possibleAlternatives: [
+            '<strong>Demo Event:</strong> Drive at sponsored event, create content, get extended access',
+            '<strong>Ambassador Program:</strong> Formal partnership with vehicle access',
+            '<strong>Loaner Program:</strong> Access during service appointment windows',
+            '<strong>Partnership Proposal:</strong> Create case study for Tesla marketing',
+            '<strong>Referral Network:</strong> Join local Tesla community with perks'
+          ],
+          howToEvaluate: [
+            'Does it meet your core goals? (Experience the vehicle, test theories)',
+            'What\'s the time commitment vs. value?',
+            'Are there strings attached that conflict with your integrity?',
+            'Can you parlay this into the original ask later?'
+          ],
+          howToRespond: [
+            'Show genuine interest: "Tell me more—that sounds intriguing."',
+            'Ask clarifying questions about terms, expectations, duration',
+            'Don\'t say yes immediately—ask for time to consider',
+            'If it\'s good, accept enthusiastically and overdeliver'
+          ],
+          followUp: 'Whether you accept the alternative or not, maintain the relationship. Creative reps are rare—they\'re valuable contacts even if this particular path doesn\'t work out.'
+        }
+      },
+      {
+        id: 'soft-no-timing',
+        title: 'Soft No (Timing Issue)',
+        probability: '10%',
+        desc: 'Not now, but possible later. High inventory season or staff shortage.',
+        archetype: ['gatekeeper', 'pragmatist'],
+        outcome: 'delayed',
+        tags: ['neutral'],
+        fullDetails: {
+          whatHappens: 'The rep says "I love the idea, but we\'re slammed right now" or "Ask me again in a few weeks when things calm down."',
+          whyItHappens: [
+            'Genuine inventory constraints (high sales period)',
+            'Staff shortage—not enough bandwidth to coordinate',
+            'Upcoming model refresh—demos being held for new stock',
+            'End-of-quarter push—all hands on sales'
+          ],
+          howToRespond: [
+            'Acknowledge gracefully: "That makes sense—timing is everything."',
+            'Clarify: "When would be a better time? Is there a slow season?"',
+            'Stay engaged: "Can I check back in [timeframe]?"',
+            'Build relationship: "In the meantime, is there anything I can help with?"'
+          ],
+          strategicWaiting: [
+            'Mark your calendar for follow-up (don\'t let them forget)',
+            'Send periodic value-adds: interesting EV articles, local climate data',
+            'Build social proof in the meantime (create content, grow network)',
+            'Take a standard test drive now to keep the relationship warm'
+          ],
+          bestTimesToRetry: [
+            '<strong>January-February:</strong> Post-holiday lull, tax season prep',
+            '<strong>Late summer:</strong> Between vacation rush and fall ramp-up',
+            '<strong>Mid-quarter:</strong> Less pressure than month/quarter-end',
+            '<strong>After new model launch:</strong> Previous model stock needs to move'
+          ],
+          followUp: 'Add a calendar reminder for the suggested timeframe. When you follow up, reference your previous conversation and any progress you\'ve made in the meantime.'
+        }
+      },
+      {
+        id: 'hard-no-liability',
+        title: 'Hard No (Liability Concerns)',
+        probability: '7%',
+        desc: 'Rep cites insurance or legal concerns. Difficult to overcome without corporate approval.',
+        archetype: ['gatekeeper'],
+        outcome: 'likely-dead-end',
+        tags: ['negative'],
+        fullDetails: {
+          whatHappens: 'The rep says "Our insurance doesn\'t cover extended demos" or "Corporate policy is strict on this for liability reasons."',
+          whyItHappens: [
+            'Real legal constraints—not just an excuse',
+            'Past incidents have tightened policy',
+            'Local franchise owner is risk-averse',
+            'Insurance rider limitations'
+          ],
+          howToRespond: [
+            'Don\'t argue: "I understand—liability is serious."',
+            'Explore: "Is there a waiver I could sign that would address the concern?"',
+            'Offer proof: "I have excellent driving record, comprehensive insurance, and references."',
+            'Pivot: "What would need to be true for this to be possible?"'
+          ],
+          possibleWorkarounds: [
+            '<strong>Personal Insurance:</strong> Add Tesla as additional insured on your policy',
+            '<strong>Security Deposit:</strong> Offer substantial deposit as risk mitigation',
+            '<strong>Video Documentation:</strong> Dashcam recording to protect both parties',
+            '<strong>Shorter Duration:</strong> See if 2-3 days has lower liability threshold',
+            '<strong>Corporate Contact:</strong> Ask if there\'s a formal program for content creators'
+          ],
+          whenToWalkAway: [
+            'If liability is a firm policy across all stores',
+            'If workarounds are rejected without consideration',
+            'If you sense you\'re annoying them by pushing',
+            'If the energy spent fighting this exceeds the value'
+          ],
+          followUp: 'If it\'s truly dead, thank them for their time and ask if they know of any other programs or opportunities to experience the vehicle longer-term. Sometimes a graceful retreat leaves the door cracked.'
+        }
+      }
+    ];
+    
+    // Outcomes Database
+    const OUTCOMES = [
+      {
+        id: 'full-success',
+        name: '✅ Full Success',
+        desc: '7 full days secured',
+        locked: true
+      },
+      {
+        id: 'partial-success',
+        name: '⚡ Partial Success',
+        desc: '3-5 days secured',
+        locked: true
+      },
+      {
+        id: 'conditional-yes',
+        name: '🤝 Conditional Yes',
+        desc: 'Approved with requirements',
+        locked: true
+      },
+      {
+        id: 'needs-escalation',
+        name: '⬆️ Needs Escalation',
+        desc: 'Manager approval required',
+        locked: true
+      },
+      {
+        id: 'alternative-win',
+        name: '🎯 Alternative Win',
+        desc: 'Different opportunity offered',
+        locked: true
+      },
+      {
+        id: 'delayed',
+        name: '⏰ Delayed',
+        desc: 'Try again later',
+        locked: true
+      },
+      {
+        id: 'likely-dead-end',
+        name: '🚫 Likely Dead End',
+        desc: 'Hard policy block',
+        locked: true
+      }
+    ];
+    
+    // Tactics Library
+    const TACTICS = [
+      {
+        name: 'The Value Frame',
+        desc: 'Lead with what they gain, not what you want.',
+        example: '"This generates detailed Alberta winter data your team can use for future customers, plus documented service feedback and likely 2-3 direct referrals."',
+        whenToUse: 'Pragmatist or Gatekeeper archetypes, value negotiation scenarios'
+      },
+      {
+        name: 'The Easy Yes',
+        desc: 'Reduce friction by making the next step trivial.',
+        example: '"I can start immediately, I\'ll handle all paperwork, and I\'ll return it fully charged with a detailed report."',
+        whenToUse: 'Any archetype when you sense interest but hesitation'
+      },
+      {
+        name: 'The Escalation Assist',
+        desc: 'Help them get approval by doing the work for them.',
+        example: '"I\'d be happy to put this in writing for your manager—what information would be most helpful?"',
+        whenToUse: 'Newbie archetype, escalation scenarios'
+      },
+      {
+        name: 'The Authentic Enthusiast',
+        desc: 'Match energy with genuine excitement.',
+        example: '"I\'ve been following Tesla since the Roadster days—the over-the-air updates and real-world winter performance are what I\'m most excited to experience."',
+        whenToUse: 'Enthusiast archetype, creative solution scenarios'
+      },
+      {
+        name: 'The Strategic Pivot',
+        desc: 'When blocked, shift to adjacent possibility.',
+        example: '"If 7 days isn\'t possible, what\'s the longest period you could authorize? Or is there an alternative program I\'m not aware of?"',
+        whenToUse: 'Policy block, hard no scenarios'
+      },
+      {
+        name: 'The Relationship Deposit',
+        desc: 'Build goodwill before asking for the big favor.',
+        example: '"I noticed you\'re also [shared interest]. Before we dive into logistics, I\'d love to hear your own EV experience."',
+        whenToUse: 'Early in call, any archetype for rapport building'
+      },
+      {
+        name: 'The Proof of Concept',
+        desc: 'Leverage past success to build credibility.',
+        example: '"I did something similar with [other project/brand]—here\'s the outcome report I created. I\'d deliver the same for you."',
+        whenToUse: 'Value negotiation, building trust with skeptical reps'
+      },
+      {
+        name: 'The Graceful Exit',
+        desc: 'Leave the door open even when denied.',
+        example: '"I understand completely—thanks for hearing me out. If anything changes or you think of an alternative, I\'d love to revisit this."',
+        whenToUse: 'Hard no scenarios, building long-term relationship'
+      }
+    ];
+    
+    /* ============================================
+       TOOLTIP: State Management (IndexedDB)
+       WHAT: Persistent storage of user progress
+       HOW TO USE: Automatically saves on interactions
+       EXPECTED OUTCOME: Progress persists across sessions
+       ============================================ */
+    
+    const DB_NAME = 'tesla_scenario_mapper';
+    const DB_VERSION = 1;
+    let db;
+    
+    // State object
+    let state = {
+      selectedArchetype: null,
+      viewedScenarios: [],
+      unlockedOutcomes: [],
+      theme: 'auto',
+      lastVisit: null
+    };
+    
+    // Initialize IndexedDB
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          db = request.result;
+          resolve(db);
+        };
+        
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains('state')) {
+            db.createObjectStore('state', { keyPath: 'id' });
+          }
+        };
+      });
+    }
+    
+    // Save state to IndexedDB
+    function saveState() {
+      if (!db) return;
+      
+      const transaction = db.transaction(['state'], 'readwrite');
+      const store = transaction.objectStore('state');
+      
+      state.lastVisit = new Date().toISOString();
+      store.put({ id: 'current', ...state });
+      
+      updateHUD();
+    }
+    
+    // Load state from IndexedDB
+    function loadState() {
+      return new Promise((resolve) => {
+        if (!db) {
+          resolve();
+          return;
+        }
+        
+        const transaction = db.transaction(['state'], 'readonly');
+        const store = transaction.objectStore('state');
+        const request = store.get('current');
+        
+        request.onsuccess = () => {
+          if (request.result) {
+            state = { ...state, ...request.result };
+            
+            // Apply loaded theme
+            if (state.theme) {
+              setTheme(state.theme, false);
+            }
+          }
+          resolve();
+        };
+        
+        request.onerror = () => resolve();
+      });
+    }
+    
+    /* ============================================
+       TOOLTIP: Rendering Functions
+       WHAT: Generate HTML for each section
+       HOW TO USE: Called on page load and updates
+       EXPECTED OUTCOME: Dynamic interface population
+       ============================================ */
+    
+    // Render archetypes
+    function renderArchetypes() {
+      const grid = document.getElementById('archetypeGrid');
+      grid.innerHTML = '';
+      
+      ARCHETYPES.forEach(archetype => {
+        const card = document.createElement('div');
+        card.className = 'archetype-card';
+        if (state.selectedArchetype === archetype.id) {
+          card.classList.add('selected');
+        }
+        
+        card.innerHTML = `
+          <div class="archetype-icon">${archetype.icon}</div>
+          <div class="archetype-name">${archetype.name}</div>
+          <div style="color: var(--muted); font-size: 0.85rem; line-height: 1.4;">${archetype.desc}</div>
+          <div style="margin-top: 12px; color: var(--muted); font-size: 0.8rem;">
+            Probability: <strong style="color: var(--accent);">${Math.round(archetype.probability * 100)}%</strong>
+          </div>
+        `;
+        
+        card.onclick = () => selectArchetype(archetype.id);
+        grid.appendChild(card);
+      });
+    }
+    
+    // Select archetype
+    function selectArchetype(id) {
+      state.selectedArchetype = id;
+      saveState();
+      renderArchetypes();
+      showArchetypeDetails(id);
+      filterScenarios();
+    }
+    
+    // Show archetype details
+    function showArchetypeDetails(id) {
+      const archetype = ARCHETYPES.find(a => a.id === id);
+      if (!archetype) return;
+      
+      const details = document.getElementById('archetypeDetails');
+      const name = document.getElementById('archetypeName');
+      const info = document.getElementById('archetypeInfo');
+      const approaches = document.getElementById('archetypeApproaches');
+      const avoid = document.getElementById('archetypeAvoid');
+      
+      name.textContent = archetype.name;
+      info.textContent = archetype.desc;
+      
+      approaches.innerHTML = archetype.approaches.map(a => `<li>${a}</li>`).join('');
+      avoid.innerHTML = archetype.avoid.map(a => `<li>${a}</li>`).join('');
+      
+      details.style.display = 'block';
+      details.classList.add('fade-in');
+    }
+    
+    // Render scenarios
+    function renderScenarios(filtered = SCENARIOS) {
+      const grid = document.getElementById('scenarioGrid');
+      grid.innerHTML = '';
+      
+      filtered.forEach(scenario => {
+        const card = document.createElement('div');
+        card.className = 'scenario-card';
+        
+        if (state.viewedScenarios.includes(scenario.id)) {
+          card.classList.add('viewed');
+        }
+        
+        card.innerHTML = `
+          <div class="scenario-header">
+            <div class="scenario-title">${scenario.title}</div>
+            <div class="probability">${scenario.probability}</div>
+          </div>
+          <div class="scenario-desc">${scenario.desc}</div>
+          <div class="tags">
+            ${scenario.tags.map(tag => `<span class="tag ${tag}">${tag}</span>`).join('')}
+            ${scenario.archetype.map(arch => {
+              const a = ARCHETYPES.find(x => x.id === arch);
+              return `<span class="tag">${a ? a.icon + ' ' + a.name : arch}</span>`;
+            }).join('')}
+          </div>
+          <div style="margin-top: 12px; font-size: 0.85rem; color: var(--accent); cursor: pointer;">
+            Click to explore details →
+          </div>
+        `;
+        
+        card.onclick = () => showScenarioModal(scenario);
+        grid.appendChild(card);
+      });
+      
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div style="padding: 40px; text-align: center; color: var(--muted);">No scenarios match the selected filter.</div>';
+      }
+    }
+    
+    // Filter scenarios
+    function filterScenarios() {
+      const filter = document.getElementById('scenarioFilter').value;
+      
+      if (filter === 'all') {
+        renderScenarios();
+      } else {
+        const filtered = SCENARIOS.filter(s => s.archetype.includes(filter));
+        renderScenarios(filtered);
+      }
+    }
+    
+    // Populate scenario filter dropdown
+    function populateScenarioFilter() {
+      const select = document.getElementById('scenarioFilter');
+      
+      ARCHETYPES.forEach(arch => {
+        const option = document.createElement('option');
+        option.value = arch.id;
+        option.textContent = `${arch.icon} ${arch.name}`;
+        select.appendChild(option);
+      });
+    }
+    
+    // Show scenario modal
+    function showScenarioModal(scenario) {
+      const modal = document.getElementById('scenarioModal');
+      const body = document.getElementById('modalBody');
+      
+      // Mark as viewed
+      if (!state.viewedScenarios.includes(scenario.id)) {
+        state.viewedScenarios.push(scenario.id);
+        unlockOutcome(scenario.outcome);
+        saveState();
+        renderScenarios();
+        renderOutcomes();
+      }
+      
+      const details = scenario.fullDetails;
+      
+      body.innerHTML = `
+        <h2 style="color: var(--accent); margin-bottom: 16px;">${scenario.title}</h2>
+        <div style="margin-bottom: 20px;">
+          <span class="probability" style="font-size: 1rem; padding: 6px 16px;">${scenario.probability} probability</span>
+        </div>
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: var(--accent2); margin-bottom: 12px;">What Happens</h3>
+          <p style="color: var(--muted); line-height: 1.6;">${details.whatHappens}</p>
+        </div>
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: var(--accent2); margin-bottom: 12px;">Why It Happens</h3>
+          <ul style="color: var(--muted); line-height: 1.6;">
+            ${details.whyItHappens.map(why => `<li>${why}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+          <h3 style="color: var(--success); margin-bottom: 12px;">How to Respond</h3>
+          <ul style="color: var(--muted); line-height: 1.6;">
+            ${details.howToRespond ? details.howToRespond.map(how => `<li>${how}</li>`).join('') : ''}
+            ${details.howToCapitalize ? details.howToCapitalize.map(how => `<li>${how}</li>`).join('') : ''}
+          </ul>
+        </div>
+        
+        ${details.recoveryPaths ? `
+          <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <h3 style="color: var(--warn); margin-bottom: 12px;">Recovery Paths</h3>
+            <ul style="color: var(--muted); line-height: 1.6;">
+              ${details.recoveryPaths.map(path => `<li>${path}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+        
+        ${details.keyTalkingPoints ? `
+          <div style="background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+            <h3 style="color: var(--accent); margin-bottom: 12px;">Key Talking Points</h3>
+            <ul style="color: var(--muted); line-height: 1.6;">
+              ${details.keyTalkingPoints.map(point => `<li>${point}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+        
+        <div style="background: var(--card); padding: 20px; border-radius: 12px;">
+          <h3 style="color: var(--accent2); margin-bottom: 12px;">Follow-Up Strategy</h3>
+          <p style="color: var(--muted); line-height: 1.6;">${details.followUp}</p>
+        </div>
+      `;
+      
+      modal.classList.add('active');
+    }
+    
+    // Close modal
+    function closeModal() {
+      document.getElementById('scenarioModal').classList.remove('active');
+    }
+    
+    // Unlock outcome
+    function unlockOutcome(outcomeId) {
+      if (!state.unlockedOutcomes.includes(outcomeId)) {
+        state.unlockedOutcomes.push(outcomeId);
+      }
+    }
+    
+    // Render outcomes
+    function renderOutcomes() {
+      const grid = document.getElementById('outcomeGrid');
+      grid.innerHTML = '';
+      
+      OUTCOMES.forEach(outcome => {
+        const badge = document.createElement('div');
+        const unlocked = state.unlockedOutcomes.includes(outcome.id);
+        
+        badge.className = `badge ${unlocked ? 'unlocked' : 'locked'}`;
+        badge.innerHTML = `
+          <span style="font-size: 1.2rem;">${unlocked ? outcome.name.split(' ')[0] : '🔒'}</span>
+          <span>${unlocked ? outcome.name.substring(outcome.name.indexOf(' ') + 1) : outcome.name.substring(outcome.name.indexOf(' ') + 1)}</span>
+        `;
+        
+        if (unlocked) {
+          badge.innerHTML += `<div style="font-size: 0.75rem; color: var(--muted);">${outcome.desc}</div>`;
+        }
+        
+        grid.appendChild(badge);
+      });
+    }
+    
+    // Render tactics
+    function renderTactics() {
+      const container = document.getElementById('tacticsLibrary');
+      container.innerHTML = '';
+      
+      TACTICS.forEach(tactic => {
+        const card = document.createElement('div');
+        card.style.cssText = 'background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--border);';
+        
+        card.innerHTML = `
+          <h3 style="color: var(--accent); margin-bottom: 8px;">${tactic.name}</h3>
+          <p style="color: var(--muted); font-size: 0.9rem; margin-bottom: 12px;">${tactic.desc}</p>
+          <div style="background: rgba(0,0,0,0.3); padding: 12px; border-left: 3px solid var(--accent2); border-radius: 4px; margin-bottom: 12px;">
+            <div style="color: var(--muted); font-size: 0.85rem; font-style: italic;">"${tactic.example}"</div>
+          </div>
+          <div style="color: var(--muted); font-size: 0.85rem;">
+            <strong>When to use:</strong> ${tactic.whenToUse}
+          </div>
+        `;
+        
+        container.appendChild(card);
+      });
+    }
+    
+    // Update HUD
+    function updateHUD() {
+      const readinessScore = Math.round((state.viewedScenarios.length / SCENARIOS.length) * 100);
+      document.getElementById('readinessScore').textContent = readinessScore + '%';
+      document.getElementById('readinessBar').style.width = readinessScore + '%';
+      
+      document.getElementById('scenarioCount').textContent = `${state.viewedScenarios.length}/${SCENARIOS.length}`;
+      
+      let confidence = 'Novice';
+      if (readinessScore >= 80) confidence = 'Master';
+      else if (readinessScore >= 60) confidence = 'Expert';
+      else if (readinessScore >= 40) confidence = 'Intermediate';
+      else if (readinessScore >= 20) confidence = 'Apprentice';
+      
+      document.getElementById('confidenceLevel').textContent = confidence;
+    }
+    
+    /* ============================================
+       TOOLTIP: Conversation Flow Tree
+       WHAT: Interactive decision tree visualization
+       HOW TO USE: Click nodes to expand branches
+       EXPECTED OUTCOME: Mental model of call structure
+       ============================================ */
+    
+    const FLOW_DATA = {
+      text: '📞 Opening: "Hi, I\'m interested in testing a Tesla for about a week..."',
+      color: 'var(--accent)',
+      children: [
+        {
+          text: '✅ Enthusiastic Response: "Tell me more!"',
+          color: 'var(--success)',
+          children: [
+            {
+              text: 'Share value prop: winter data, referrals, feedback',
+              color: 'var(--success)',
+              children: [
+                { text: '🎉 Instant approval → Lock in dates', color: 'var(--success)' },
+                { text: '🤔 "Let me check calendar" → Follow up', color: 'var(--accent)' }
+              ]
+            }
+          ]
+        },
+        {
+          text: '⚠️ Policy Response: "Our standard is 24 hours..."',
+          color: 'var(--warn)',
+          children: [
+            {
+              text: 'Ask: "What\'s the longest you could authorize?"',
+              color: 'var(--warn)',
+              children: [
+                { text: '3-4 days offered → Accept or counter', color: 'var(--accent)' },
+                { text: '"Need manager approval" → Escalation path', color: 'var(--warn)' }
+              ]
+            },
+            {
+              text: 'Offer compromise: "Could we do a long weekend?"',
+              color: 'var(--warn)',
+              children: [
+                { text: 'Yes → Lock it in', color: 'var(--success)' },
+                { text: 'No → Try escalation', color: 'var(--danger)' }
+              ]
+            }
+          ]
+        },
+        {
+          text: '❌ Hard No: "That\'s not possible..."',
+          color: 'var(--danger)',
+          children: [
+            {
+              text: 'Ask: "Is there anyone who could authorize an exception?"',
+              color: 'var(--danger)',
+              children: [
+                { text: 'Manager contact given → Prepare written proposal', color: 'var(--warn)' },
+                { text: 'Firm no → Graceful exit, try another store', color: 'var(--danger)' }
+              ]
+            },
+            {
+              text: 'Pivot: "What alternative programs exist?"',
+              color: 'var(--danger)',
+              children: [
+                { text: 'Alternative offered → Evaluate and possibly accept', color: 'var(--accent2)' },
+                { text: 'Nothing available → Thank and exit', color: 'var(--danger)' }
+              ]
+            }
+          ]
+        },
+        {
+          text: '🤝 Value Negotiation: "What\'s in it for us?"',
+          color: 'var(--accent2)',
+          children: [
+            {
+              text: 'Articulate value: data, referrals, content, feedback',
+              color: 'var(--accent2)',
+              children: [
+                { text: 'Convinced → Move to logistics', color: 'var(--success)' },
+                { text: 'Still hesitant → Offer written proposal', color: 'var(--warn)' }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+    
+    function renderFlowTree() {
+      const container = document.getElementById('flowTree');
+      container.innerHTML = '';
+      renderFlowNode(FLOW_DATA, container);
+    }
+    
+    function renderFlowNode(node, parent, depth = 0) {
+      const nodeEl = document.createElement('div');
+      nodeEl.className = 'flow-node';
+      nodeEl.style.borderColor = node.color || 'var(--border)';
+      nodeEl.textContent = node.text;
+      
+      if (node.children && node.children.length > 0) {
+        const childContainer = document.createElement('div');
+        childContainer.className = 'flow-children';
+        childContainer.style.display = 'none';
+        
+        node.children.forEach(child => {
+          renderFlowNode(child, childContainer, depth + 1);
+        });
+        
+        nodeEl.onclick = (e) => {
+          e.stopPropagation();
+          if (childContainer.style.display === 'none') {
+            childContainer.style.display = 'block';
+            nodeEl.classList.add('selected');
+          } else {
+            childContainer.style.display = 'none';
+            nodeEl.classList.remove('selected');
+          }
+        };
+        
+        parent.appendChild(nodeEl);
+        parent.appendChild(childContainer);
+      } else {
+        parent.appendChild(nodeEl);
+      }
+    }
+    
+    function expandAllFlow() {
+      document.querySelectorAll('.flow-children').forEach(el => {
+        el.style.display = 'block';
+      });
+      document.querySelectorAll('.flow-node').forEach(el => {
+        el.classList.add('selected');
+      });
+    }
+    
+    function collapseAllFlow() {
+      document.querySelectorAll('.flow-children').forEach(el => {
+        el.style.display = 'none';
+      });
+      document.querySelectorAll('.flow-node').forEach(el => {
+        el.classList.remove('selected');
+      });
+    }
+    
+    function resetFlow() {
+      collapseAllFlow();
+    }
+    
+    /* ============================================
+       TOOLTIP: Export/Import Functions
+       WHAT: Save and restore user data
+       HOW TO USE: Click export buttons or upload file
+       EXPECTED OUTCOME: Persistent data across devices
+       ============================================ */
+    
+    function exportJSON() {
+      const data = {
+        version: '1.0.0',
+        exportDate: new Date().toISOString(),
+        state: state,
+        archetypes: ARCHETYPES,
+        scenarios: SCENARIOS.map(s => ({
+          id: s.id,
+          title: s.title,
+          viewed: state.viewedScenarios.includes(s.id)
+        }))
+      };
+      
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tesla-scenario-map-${Date.now()}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    
+    function exportHTML() {
+      // Create a simplified HTML report
+      const scenarios = state.viewedScenarios.map(id => {
+        const s = SCENARIOS.find(x => x.id === id);
+        return s ? `<div><h3>${s.title}</h3><p>${s.desc}</p></div>` : '';
+      }).join('');
+      
+      const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tesla Call Preparation Report</title>
+  <style>
+    body { font-family: sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; }
+    h1 { color: #5ccfe6; }
+    h3 { color: #ffae57; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>Tesla 7-Day Call Preparation Report</h1>
+  <p>Generated: ${new Date().toLocaleString()}</p>
+  <p>Selected Archetype: ${state.selectedArchetype || 'None'}</p>
+  <p>Scenarios Explored: ${state.viewedScenarios.length}/${SCENARIOS.length}</p>
+  <h2>Explored Scenarios</h2>
+  ${scenarios}
+</body>
+</html>
+      `;
+      
+      const blob = new Blob([html], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tesla-call-report-${Date.now()}.html`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+    
+    function exportPDF() {
+      window.print();
+    }
+    
+    function importJSON() {
+      const fileInput = document.getElementById('importFile');
+      const file = fileInput.files[0];
+      
+      if (!file) {
+        document.getElementById('importStatus').textContent = 'Please select a file first.';
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          
+          if (data.state) {
+            state = { ...state, ...data.state };
+            saveState();
+            
+            // Re-render everything
+            renderArchetypes();
+            renderScenarios();
+            renderOutcomes();
+            updateHUD();
+            
+            if (state.selectedArchetype) {
+              showArchetypeDetails(state.selectedArchetype);
+            }
+            
+            document.getElementById('importStatus').textContent = '✅ Successfully imported!';
+            document.getElementById('importStatus').style.color = 'var(--success)';
+          } else {
+            document.getElementById('importStatus').textContent = '❌ Invalid file format.';
+            document.getElementById('importStatus').style.color = 'var(--danger)';
+          }
+        } catch (error) {
+          document.getElementById('importStatus').textContent = '❌ Error parsing file.';
+          document.getElementById('importStatus').style.color = 'var(--danger)';
+        }
+      };
+      
+      reader.readAsText(file);
+    }
+    
+    /* ============================================
+       TOOLTIP: Theme System
+       WHAT: Visual theme switching
+       HOW TO USE: Click theme buttons in bottom-right
+       EXPECTED OUTCOME: Interface changes appearance
+       ============================================ */
+    
+    function setTheme(theme, save = true) {
+      // Handle auto theme (system preference)
+      if (theme === 'auto') {
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.body.dataset.theme = 'auto';
+        } else {
+          document.body.dataset.theme = 'auto';
+        }
+      } else {
+        document.body.dataset.theme = theme;
+      }
+      
+      // Update active button
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+      
+      if (save) {
+        state.theme = theme;
+        saveState();
+      }
+    }
+    
+    /* ============================================
+       TOOLTIP: Parallax Constellation
+       WHAT: Animated background stars
+       HOW TO USE: Automatic, responds to scroll
+       EXPECTED OUTCOME: Subtle visual depth
+       ============================================ */
+    
+    function createConstellation() {
+      const container = document.getElementById('constellation');
+      const starCount = 50;
+      
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 4 + 's';
+        star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+        container.appendChild(star);
+      }
+      
+      // Parallax effect on scroll
+      window.addEventListener('scroll', () => {
+        const scrolled = window.pageYOffset;
+        container.style.transform = `translateY(${scrolled * 0.3}px)`;
+      });
+    }
+    
+    /* ============================================
+       TOOLTIP: Section Collapsing
+       WHAT: Toggle section visibility
+       HOW TO USE: Click section headers
+       EXPECTED OUTCOME: Content shows/hides
+       ============================================ */
+    
+    function toggleSection(header) {
+      const section = header.parentElement;
+      section.classList.toggle('collapsed');
+    }
+    
+    /* ============================================
+       TOOLTIP: Navigation Helper
+       WHAT: Smooth scroll to sections
+       HOW TO USE: Called by buttons and nav
+       EXPECTED OUTCOME: Scrolls to target section
+       ============================================ */
+    
+    function scrollToSection(id) {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    
+    /* ============================================
+       TOOLTIP: SHA-256 Hash Computation
+       WHAT: Creates tamper-evident fingerprint
+       HOW TO USE: Click "Compute SHA-256" button
+       EXPECTED OUTCOME: Hash displays in UI
+       ============================================ */
+    
+    async function computeHash() {
+      const content = document.querySelector('main').innerText;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(content);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      
+      document.getElementById('hashOutput').textContent = `${hashHex.substring(0, 16)}...${hashHex.substring(hashHex.length - 16)}`;
+    }
+    
+    /* ============================================
+       TOOLTIP: Analytics (Hidden)
+       WHAT: Tracks usage patterns for improvement
+       HOW TO USE: Automatic, privacy-respecting
+       EXPECTED OUTCOME: Daily summary email to admin
+       NOTE: This is a placeholder - actual implementation
+       would require server-side endpoint
+       ============================================ */
+    
+    function trackEvent(eventType, eventData) {
+      // Privacy-respecting analytics
+      // Only tracks anonymized interaction patterns
+      // No PII, no individual tracking
+      
+      const analyticsData = {
+        timestamp: new Date().toISOString(),
+        eventType: eventType,
+        data: eventData,
+        sessionId: state.lastVisit || 'unknown',
+        // No user identification, no IP tracking
+      };
+      
+      // Store locally for daily batch send
+      const analytics = JSON.parse(localStorage.getItem('pra_analytics') || '[]');
+      analytics.push(analyticsData);
+      
+      // Keep only last 24 hours
+      const oneDayAgo = Date.now() - 24 * 60 * 60 * 1000;
+      const filtered = analytics.filter(a => new Date(a.timestamp).getTime() > oneDayAgo);
+      
+      localStorage.setItem('pra_analytics', JSON.stringify(filtered));
+      
+      // Check if daily summary should be sent
+      const lastSent = localStorage.getItem('pra_last_analytics_send');
+      if (!lastSent || Date.now() - parseInt(lastSent) > 24 * 60 * 60 * 1000) {
+        sendDailySummary(filtered);
+      }
+    }
+    
+    function sendDailySummary(analytics) {
+      // Aggregate anonymized patterns
+      const summary = {
+        date: new Date().toISOString().split('T')[0],
+        totalSessions: new Set(analytics.map(a => a.sessionId)).size,
+        scenariosViewed: analytics.filter(a => a.eventType === 'scenario_viewed').length,
+        archetypesSelected: analytics.filter(a => a.eventType === 'archetype_selected').length,
+        exports: analytics.filter(a => a.eventType === 'export').length,
+        avgReadiness: analytics
+          .filter(a => a.eventType === 'readiness_update')
+          .reduce((sum, a) => sum + (a.data.score || 0), 0) / Math.max(1, analytics.filter(a => a.eventType === 'readiness_update').length)
+      };
+      
+      // In production, this would POST to a server endpoint
+      // For now, it's just logged
+      console.log('Daily Analytics Summary:', summary);
+      
+      // Note: Actual email sending would require server-side implementation
+      // This is a client-side placeholder showing the intended pattern
+      
+      localStorage.setItem('pra_last_analytics_send', Date.now().toString());
+    }
+    
+    /* ============================================
+       TOOLTIP: Initialization
+       WHAT: Sets up the page on load
+       HOW TO USE: Runs automatically
+       EXPECTED OUTCOME: Fully rendered interface
+       ============================================ */
+    
+    async function init() {
+      // Initialize database
+      await initDB();
+      await loadState();
+      
+      // Create background
+      createConstellation();
+      
+      // Render all sections
+      renderArchetypes();
+      renderScenarios();
+      renderOutcomes();
+      renderTactics();
+      renderFlowTree();
+      populateScenarioFilter();
+      
+      // Update HUD
+      updateHUD();
+      
+      // Apply saved theme
+      setTheme(state.theme || 'auto', false);
+      
+      // Show archetype details if one is selected
+      if (state.selectedArchetype) {
+        showArchetypeDetails(state.selectedArchetype);
+        filterScenarios();
+      }
+      
+      // Track page load
+      trackEvent('page_load', { scenarios: SCENARIOS.length });
+      
+      // Close modal on background click
+      document.getElementById('scenarioModal').addEventListener('click', (e) => {
+        if (e.target.id === 'scenarioModal') {
+          closeModal();
+        }
+      });
+      
+      // Listen for system theme changes
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+          if (state.theme === 'auto') {
+            setTheme('auto', false);
+          }
+        });
+      }
+      
+      console.log('🌟 Tesla Scenario Mapper initialized');
+      console.log('📊 State:', state);
+    }
+    
+    // Start the application
+    init();
+  </script>
+  
+  <!-- ============================================ -->
+  <!-- ZERO-HARM FOOTER NOTICE                     -->
+  <!-- ============================================ -->
+  <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.9); border-top: 1px solid var(--border); padding: 8px 20px; font-size: 0.75rem; color: var(--muted); text-align: center; z-index: 50;">
+    <strong>Zero-Harm Commitment:</strong> This tool is for honest preparation, not manipulation. 
+    Use it to approach conversations with confidence and respect. 
+    <a href="#attribution" style="color: var(--accent); margin-left: 8px;">See full statement →</a>
+  </div>
+</body>
+</html>

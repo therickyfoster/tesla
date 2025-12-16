@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cybertruck for Planetary Restoration — Winter Sentinel | Planetary Restoration Archive</title>
+<meta name="description" content="A unified, long-form proposal: Tesla Cybertruck as a zero-emission mobile lab to accelerate winter planting and planetary restoration experiments. Includes protocols, safety, data, and sponsor options." />
+<meta name="theme-color" content="#0a0f1f" />
+<meta name="color-scheme" content="dark only" />
+<style>
+  :root{
+    --bg:#060914;--fg:#eaf6ff;--muted:#a8c3d8;--accent:#6ef3ff;--glow:#6ef3ff;
+    --card:#0b1326;--ok:#7ef9a9;--warn:#ffd166;--danger:#ff6b6b;--line:#182644;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);font:16px/1.6 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  header{
+    position:relative;min-height:66vh;display:flex;align-items:center;justify-content:center;text-align:center;overflow:hidden;
+    background:radial-gradient(1200px 600px at 50% -10%, #10203a 0%, transparent 60%), linear-gradient(180deg,#05070f 0%, #05070f00 60%), #05070f;
+  }
+  .twinkle{position:absolute;inset:0;pointer-events:none}
+  .twinkle canvas{width:100%;height:100%}
+  .brand{position:relative;z-index:2;padding:3rem 1rem;max-width:1200px;margin:auto}
+  .brand h1{font-size:clamp(2rem,5vw,3.6rem);letter-spacing:.01em;margin:.25rem 0}
+  .brand p.kicker{color:var(--muted);margin:.5rem 0 1.2rem}
+  .cta{display:flex;gap:.8rem;flex-wrap:wrap;justify-content:center;margin-top:1.1rem}
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;padding:.85rem 1.05rem;border:1px solid #2a3a57;border-radius:12px;background:#0e1a33;
+    box-shadow:0 0 0px 0 rgba(110,243,255,.2), inset 0 0 0 1px #0a1326; transition:transform .08s ease, box-shadow .2s ease;
+    font-weight:600
+  }
+  .btn:hover{transform:translateY(-1px);box-shadow:0 0 22px -6px rgba(110,243,255,.6)}
+  section{padding:2.3rem 1rem}
+  .wrap{max-width:1200px;margin:0 auto}
+  .grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .split{display:grid;gap:1rem;grid-template-columns:1.2fr .8fr}
+  @media (max-width:980px){.split{grid-template-columns:1fr}}
+  .card{
+    background:linear-gradient(180deg,#0b1326,#0a1020);border:1px solid var(--line);border-radius:16px;padding:1.15rem 1.15rem 1.25rem;
+    box-shadow:inset 0 0 0 1px #0a1326, 0 10px 30px -22px #000;
+  }
+  .card h2,.card h3{margin:.25rem 0 .55rem}
+  .pill{display:inline-block;padding:.18rem .55rem;border:1px solid #274;border-radius:999px;font-size:.75rem;color:#8df5c0;background:#082418}
+  .list{margin:.4rem 0 0;padding:0 0 0 1.1rem}
+  .list li{margin:.28rem 0}
+  .mono{font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace}
+  .dim{opacity:.9}
+  .note{color:#a7c3da}
+  footer{padding:2rem 1rem;color:#9db6ca;border-top:1px solid #122042}
+  /* subtle headings accent */
+  h2 span,h3 span{color:#9fd9ff}
+  /* simple callout */
+  .callout{border-left:3px solid var(--accent);padding:.75rem 1rem;background:#0c1428;border-radius:10px;margin:.6rem 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="twinkle"><canvas id="tw"></canvas></div>
+  <div class="brand">
+    <p class="kicker">🛡️ Planetary Restoration Archive • Field Vehicle Proposal</p>
+    <h1>Cybertruck for <em>Winter Sentinel</em>: a Zero-Emission Mobile Lab for Cold-Season Restoration</h1>
+    <p class="dim">A unified, long-form proposal to place one Tesla Cybertruck into service as a rugged, all-weather basecamp, power node, and data hub for high-impact winter planting and ecosystem repair across northern biomes.</p>
+    <div class="cta">
+      <a class="btn" href="#tesla-fit">Why Cybertruck</a>
+      <a class="btn" href="#experiments">Experiments</a>
+      <a class="btn" href="#winter-sentinel">Winter Sentinel</a>
+      <a class="btn" href="#ethics">Safety & Ethics</a>
+      <a class="btn" href="#support">Donate / Sponsor</a>
+      <a class="btn" href="#faq">FAQ</a>
+    </div>
+  </div>
+</header>
+
+<section id="tesla-fit">
+  <div class="wrap split">
+    <div class="card">
+      <h2>Tesla Alignment: <span>Mission, Hardware, Impact</span></h2>
+      <p>Cybertruck’s stainless exoskeleton, sealed vault, traction, and onboard power make it a uniquely capable platform for cold-weather restoration. In our deployment, the vehicle becomes a <strong>regenerative utility node</strong>: transport, energy, shelter, and telemetry in one quiet, zero-emission package.</p>
+      <ul class="list">
+        <li><span class="pill">All-Weather Reliability</span> Fewer failure points in sub-zero conditions; quiet ops reduce wildlife stress.</li>
+        <li><span class="pill">PowerShare</span> 120V/240V outlets support augers, heated cold-frames, drone hubs, and pop-up micro-labs.</li>
+        <li><span class="pill">Vault Utility</span> Dry, temperature-buffered storage for seed stock, inoculants, sensors, and delicate drones.</li>
+        <li><span class="pill">Telematics-Ready</span> Correlate route, elevation, temperature, and energy data with seedling survival and NDVI maps.</li>
+        <li><span class="pill">Supercharger-Friendly Logistics</span> Efficient loops between remote plots and population centers without combustion generators.</li>
+      </ul>
+      <div class="callout"><strong>Outcome:</strong> Faster, cleaner fieldwork; rigorous data; open protocols for others to replicate—advancing a Tesla-aligned, zero-emission restoration playbook.</div>
+    </div>
+    <div class="card">
+      <h3>Primary Theater</h3>
+      <p>Fort McMurray, Alberta and adjacent boreal transition zones with satellite pilots in comparable cold regions.</p>
+      <h3>Living Threads</h3>
+      <ul class="list">
+        <li>__Siberian Apple Orchard Cascade (cold-hardy fruit corridors for pollinators + food security)</li>
+        <li>Peace Ripple logistics (kid-safe micro-nurseries, aid routes)</li>
+        <li>Lightforge wellness routes (warming nodes + fresh fruit access)</li>
+      </ul>
+      <p class="note">All deployments operate under a <strong>Zero Harm Override</strong> with permits, buffers, and transparent data.</p>
+    </div>
+  </div>
+</section>
+
+<section id="experiments">
+  <div class="wrap">
+    <h2>Proposed Experiments (Cybertruck-Enabled) 🚚🔬</h2>
+    <p class="note">Each protocol lists the vehicle enablement and the core measurements we’ll publish for replication.</p>
+    <div class="grid">
+      <article class="card">
+        <h3>1) Winter Micro-Nursery in Vault Canopy</h3>
+        <p>Insulated seedling racks with thermostatic control powered from the bed for cold-hardy fruit and native support species.</p>
+        <ul class="list">
+          <li><span class="pill">Enablement</span> Onboard power; blizzard-stable temps; rapid redeploy.</li>
+          <li><span class="pill">Data</span> Germination %, leaf-out timing, thermal profiles.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h3>2) Auger-Assisted Frozen-Ground Planting</h3>
+        <p>Lightweight augers create “quick-plant” micro-pits in frozen or compacted soils; compare against hand-tool controls.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Power tools & safety staging.</li><li><span class="pill">Data</span> Time/plant, root damage rate, first-season survival.</li></ul>
+      </article>
+      <article class="card">
+        <h3>3) Snow-Pack Access & Compaction Baselines</h3>
+        <p>Instrument passes with penetrometers/plate tests; optimize tire pressure and route planning for minimal disturbance.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Traction + route logging.</li><li><span class="pill">Data</span> Compaction deltas; thaw impacts.</li></ul>
+      </article>
+      <article class="card">
+        <h3>4) Myco-Mulch “Warm Nests”</h3>
+        <p>Mycelium-rich nests (wood-chip + inoculum) to buffer saplings against deep freeze and wind scald.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Dry storage; heated prep; mister power.</li><li><span class="pill">Data</span> Winter kill rate; spring vigor; colonization rate.</li></ul>
+      </article>
+      <article class="card">
+        <h3>5) Vehicle-Powered Warm Frames</h3>
+        <p>Low-energy heated cold frames to gain degree-hours above frost with different glazing and thermal-mass recipes.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Stable low-voltage power on site.</li><li><span class="pill">Data</span> Degree-hours; seedling gain.</li></ul>
+      </article>
+      <article class="card">
+        <h3>6) Pop-Up Soil & Water Micro-Lab</h3>
+        <p>Bed-bench kits for pH, EC, NPK, DO, turbidity; immediate feedback loops for planting and myco inputs.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Clean bench power + lighting.</li><li><span class="pill">Data</span> Pre/post deltas; survival correlation.</li></ul>
+      </article>
+      <article class="card">
+        <h3>7) Drone Thermal & Multispectral Patrols</h3>
+        <p>Bed power hub for thermal and NDVI sweeps over plantings and fire-scar edges in cold, clear air.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Charging; wind-break launch bay.</li><li><span class="pill">Data</span> Canopy temp, moisture stress, survival maps.</li></ul>
+      </article>
+      <article class="card">
+        <h3>8) Snow-Sled Sapling Logistics</h3>
+        <p>Low-deck ramp + sled system across crusted snow for minimal ground contact; crew strain benchmarking.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Tie-downs; warm-up bay.</li><li><span class="pill">Data</span> Loss %, speed/100 units, fatigue indices.</li></ul>
+      </article>
+      <article class="card">
+        <h3>9) Hypothermia-Safe Crew Shelter</h3>
+        <p>Cab/bed emergency warm node with interval protocols to reduce errors and exposure risk.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Heated refuge; first-aid storage.</li><li><span class="pill">Data</span> Error rate vs. temp; near-miss logs.</li></ul>
+      </article>
+      <article class="card">
+        <h3>10) Salt & PM2.5 Transects</h3>
+        <p>Road-adjacent fruit/shelterbelt trials measuring aerosols/salinity; identify tolerant companions.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Sensor mast + pumps.</li><li><span class="pill">Data</span> EC of meltwater; leaf injury; PM profile.</li></ul>
+      </article>
+      <article class="card">
+        <h3>11) Ice-Edge Watering Trials</h3>
+        <p>Insulated totes + pump power for low-spill winter watering; warm-water + mulch timing tests.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Tote heating; pump power.</li><li><span class="pill">Data</span> Freeze-thaw damage vs. timing; survival uplift.</li></ul>
+      </article>
+      <article class="card">
+        <h3>12) Rapid Fire-Scar Fruit Corridors</h3>
+        <p>Lay fruit-bearing micro-corridors across burn perimeters; monitor human/wildlife interface.</p>
+        <ul class="list"><li><span class="pill">Enablement</span> Access to ash fields; drone overwatch.</li><li><span class="pill">Data</span> Establishment; conflict mitigation logs.</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="winter-sentinel">
+  <div class="wrap">
+    <div class="card">
+      <h2><em>Winter Sentinel</em>: Advanced Seasonal Ecosystem Restoration</h2>
+      <p class="note">Core Concept: the Cybertruck serves as a mobile, all-weather basecamp, power source, and data hub for high-reward planting trials during dormancy—leveraging winter’s physics for ecological gains impossible in other seasons.</p>
+
+      <h3>Category 1 — Frost-Seeding & Soil Stabilization</h3>
+      <ul class="list">
+        <li><strong>“Frost-Drill” Transect</strong> — Broadcast native grass/legume seed onto frozen ground in late winter; precise torque control enables steady distribution on ice. <em>Vault</em> keeps seed/equipment dry; outlets power controls and pre-dawn lighting.</li>
+        <li><strong>Erosion-Control Blanket Deployment</strong> — Install biodegradable coir/straw blankets on steep, unstable slopes when frozen ground provides a stable work platform. Exoskeleton + air suspension navigate icy access; vault carries large rolls; outlets run pneumatic staplers.</li>
+      </ul>
+
+      <h3>Category 2 — Dormancy-Breaking & Stratification</h3>
+      <ul class="list">
+        <li><strong>Direct-Seeding of Hard-Seeded Species</strong> — Oak, plum, serviceberry seeded late fall to naturally stratify. Truck functions as secure mobile lab for multi-day soil moisture/temperature monitoring.</li>
+        <li><strong>“Ice-Ball” Willow & Cottonwood Cuttings</strong> — Live cuttings frozen into ice spheres placed in pre-augered streambank holes; slow melt anchors and hydrates. Vault as mobile freezer; chassis ruggedness for floodplain navigation.</li>
+      </ul>
+
+      <h3>Category 3 — Snow-Based Planting & Microclimate Manipulation</h3>
+      <ul class="list">
+        <li><strong>Snow-Farming for Conifer Seedlings</strong> — Plant bare-root spruce/fir beneath snowpack to reduce desiccation and thermal swings. Power supports thermal imaging; ground-penetrating assessments of snow/soil conditions.</li>
+        <li><strong>“Snow-Mold” Inoculation Trial</strong> — Apply mycorrhizae + N-fixers (with biochar carrier) to planting holes in winter. Vault provides controlled environment for sensitive biologicals.</li>
+      </ul>
+
+      <h3>Category 4 — Technology & Monitoring Intensive</h3>
+      <ul class="list">
+        <li><strong>Autonomous Winter Drone Seeding</strong> — Heavy-lift drone launches from vault platform to disperse clay-coated seed bombs. Truck supplies continuous clean power, telemetry hub, and secure storage.</li>
+        <li><strong>Long-Term Phenology & Soil Sensor Network</strong> — Dense wireless array for soil temperature, moisture, salinity across freeze-thaw cycles. High-voltage battery powers install/test; quiet operations avoid generator noise and fumes.</li>
+      </ul>
+
+      <h3>Cybertruck Advantages — Summary</h3>
+      <ul class="list">
+        <li><span class="pill">All-Weather Mobility</span> Access remote, snow-bound, muddy sites with armored durability and torque control.</li>
+        <li><span class="pill">Onboard Power</span> Extended field missions without combustion generators; cleaner data and crew health.</li>
+        <li><span class="pill">Secure Vault</span> Lockable, weatherproof cargo for seeds, inoculants, drones, sensors.</li>
+        <li><span class="pill">Basecamp & Data Hub</span> Shelter + climate control + connectivity = more science per day.</li>
+        <li><span class="pill">Low Opex, Zero Emissions</span> Aligns with restoration ethos; decarbonizes logistics.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="ethics">
+  <div class="wrap grid">
+    <div class="card">
+      <h2>Safety • Ethics • Permits</h2>
+      <ul class="list">
+        <li><strong>Permitting</strong> Crown/private land permissions logged; sites GPS-stamped and published.</li>
+        <li><strong>Minimal Disturbance</strong> Winter roads, snow routes, standoff buffers; compaction monitored.</li>
+        <li><strong>Wildlife-First</strong> Quiet approaches, distance protocols, leave-no-trace teardown.</li>
+        <li><strong>Open Protocols</strong> Methods and code released for community replication and peer review.</li>
+        <li><strong>Data Ethics</strong> No PII; ecological data shipped with context and caveats.</li>
+        <li><strong>Zero Harm Override</strong> If risks rise, we halt and reassess. Full stop.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Evidence & Public Proof</h2>
+      <ul class="list">
+        <li>Route/energy/temperature logs correlated with survival outcomes.</li>
+        <li>Seasonal dashboards for germination, vigor, and NDVI mosaics.</li>
+        <li>Soil & water deltas (pH, EC, NPK, DO), open datasets, and replication notes.</li>
+        <li>Hashes (e.g., OpenTimestamps/IPFS) for protocols and reports.</li>
+      </ul>
+      <p class="note">Evidence beats opinion. We publish what works—and what doesn’t—so the world can scale the wins.</p>
+    </div>
+  </div>
+</section>
+
+<section id="support">
+  <div class="wrap split">
+    <div class="card">
+      <h2>Donate a Cybertruck or Sponsor the Outfitting</h2>
+      <p>We welcome either a vehicle donation or a sponsorship covering lease/insurance and mission outfitting (vault canopy, racks, micro-lab modules, drone hub, warm-frame kits).</p>
+      <ul class="list">
+        <li><strong>Title Holder:</strong> Planetary Restoration Archive (open-source initiative).</li>
+        <li><strong>Use:</strong> Field experiments, community demos, education, and aid logistics.</li>
+        <li><strong>Visibility:</strong> Optional low-profile sponsor mark on canopy + in reports and mission dashboards.</li>
+      </ul>
+      <p><span class="pill">Contact</span> <span class="mono">YOUR_EMAIL@planetaryrestorationarchive.com</span></p>
+      <div class="callout">We can provide an official letter for Tesla, dealerships, or donors, along with public reporting and on-chain proofs.</div>
+    </div>
+    <div class="card">
+      <h3>Alternate Support Paths</h3>
+      <ul class="list">
+        <li>Fund bed-power modules, augers, drone kits, or micro-lab instruments.</li>
+        <li>Donate cold-hardy saplings, inoculants, soil media, or protective fabrics.</li>
+        <li>Contribute data tooling, dashboards, or protocol reviews.</li>
+      </ul>
+      <h4>Crypto (verifiable):</h4>
+      <ul class="list mono">
+        <li>ETH: 0xCeA929dee554652261fd6261F3034A2D71C7BDDb</li>
+        <li>SOL: HfGCVthQ4Wp4CAYd4v7gJX53h6X3mdreUocjrhByPXQx</li>
+        <li>BTC: bc1q6fyvqxm7jryy5edckk9nuu6mgyjlz4nnp8nksr</li>
+      </ul>
+      <p class="note">We publish receipts, hashes, and outcomes so support is visible and auditable.</p>
+      <p><a class="btn" href="https://x.com/intent/tweet?text=Elon%2C%20let%E2%80%99s%20deploy%20a%20Cybertruck%20as%20a%20zero%E2%80%91emission%20winter%20lab%20for%20planetary%20restoration%E2%80%94see%20the%20proposal%20at%20planetaryrestorationarchive.com%20%F0%9F%9A%9A%E2%9A%A1%EF%B8%8F%20%23Cybertruck%20%23Tesla%20%23PlanetaryRestoration" target="_blank" rel="noopener">Share on X</a></p>
+    </div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap grid">
+    <div class="card">
+      <h2>FAQ</h2>
+      <h3>Is winter planting really safer for soils?</h3>
+      <p>With frozen ground and snow cover, access can reduce compaction and erosion. We measure and publish compaction baselines and adjust routes/tire pressure accordingly.</p>
+      <h3>What about survival rates?</h3>
+      <p>Trials compare myco-nests, warm-frames, and timing variants to quantify winter kill vs. spring vigor. Survival deltas are posted with data and methods.</p>
+      <h3>How do you prevent wildlife conflicts?</h3>
+      <p>Standoff protocols, quiet operations, no baiting, and post-visit cleanup—plus monitoring of any human/wildlife interface near fruit corridors.</p>
+      <h3>Who can replicate?</h3>
+      <p>All protocols and code are open. Educators, municipalities, and crews can fork the methods and adapt responsibly.</p>
+    </div>
+    <div class="card">
+      <h2>About the Archive</h2>
+      <p>The Planetary Restoration Archive is an open-source ledger of field-tested methods, data, and proofs designed to help communities transform burn scars, road verges, and cold-region corridors into living infrastructure.</p>
+      <p class="note">Peace first. Sovereignty always. Technology as adaptation.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p><strong>Planetary Restoration Archive</strong> — regenerative field labs, open protocols, and proof-of-work for a flourishing future. ✨</p>
+    <p>Coordinator: Foster + Navi • Email: <a href="mailto:YOUR_EMAIL@planetaryrestorationarchive.com">YOUR_EMAIL@planetaryrestorationarchive.com</a></p>
+  </div>
+</footer>
+
+<script>
+/* Subtle twinkle field (no external assets) */
+(function(){
+  const c=document.getElementById('tw'); const DPR=Math.min(window.devicePixelRatio||1,2);
+  function fit(){c.width=c.clientWidth*DPR; c.height=c.clientHeight*DPR}
+  const stars=[];
+  function init(n=260){stars.length=0; for(let i=0;i<n;i++){stars.push({x:Math.random(),y:Math.random(),r:Math.random()*1.2+0.25,s:Math.random()*0.6+0.25,p:Math.random()*6.28})}}
+  function draw(t){
+    const g=c.getContext('2d'); g.clearRect(0,0,c.width,c.height);
+    for(const s of stars){
+      const tw=(1+Math.sin(t*s.s+s.p))*0.5; const r=(s.r + tw*0.9)*DPR;
+      g.beginPath(); g.arc(s.x*c.width, s.y*c.height, r, 0, 6.283); g.fillStyle='rgba(110,243,255,.85)'; g.fill();
+    }
+    requestAnimationFrame(ts=>draw(ts/550));
+  }
+  window.addEventListener('resize', fit, {passive:true});
+  fit(); init(); draw(0);
+})();
+
+/* Minimal offline cache */
+if('serviceWorker' in navigator){
+  const sw = `
+    const CACHE='pra-cybertruck-v2';
+    self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(['./'])));});
+    self.addEventListener('fetch',e=>{
+      e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(res=>{
+        const copy=res.clone(); caches.open(CACHE).then(c=>c.put(e.request, copy)); return res;
+      }).catch(()=>caches.match('./'))));
+    });
+  `;
+  const blob=new Blob([sw],{type:'text/javascript'});
+  const url=URL.createObjectURL(blob);
+  navigator.serviceWorker.register(url);
+}
+</script>
+
+<!-- Optional: lightweight structured data to help discovery -->
+<script type="application/ld+json">
+{
+ "@context":"https://schema.org",
+ "@type":"Project",
+ "name":"Winter Sentinel — Cybertruck Mobile Lab for Planetary Restoration",
+ "description":"Unified proposal to deploy a Tesla Cybertruck as a zero-emission winter field laboratory for ecosystem restoration.",
+ "url":"https://planetaryrestorationarchive.com",
+ "funder":[{"@type":"Organization","name":"Tesla (requested)"}],
+ "areaServed":"CA-AB Boreal and similar cold regions",
+ "keywords":"Tesla Cybertruck, winter planting, mycorrhizae, frost seeding, NDVI, boreal restoration, zero-emission field lab"
+}
+</script>
+</body>
+</html>
